@@ -26,7 +26,7 @@ spec:
         name: mvn
     - name: build-s2i
       taskRef:
-        name: quarkus-native
+        name: s2i-quarkus
       runAfter:
         - unit-test
       resources:

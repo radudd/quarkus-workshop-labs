@@ -21,7 +21,7 @@ oc create -f https://raw.githubusercontent.com/tektoncd/catalog/master/openshift
   -f https://raw.githubusercontent.com/openlab-red/pipelines-catalog/master/quarkus/s2i-quarkus-task.yaml \
   -f https://raw.githubusercontent.com/openlab-red/pipelines-catalog/master/quarkus/quarkus-native-task.yaml \
   -f https://raw.githubusercontent.com/openlab-red/pipelines-catalog/master/quarkus/quarkus-jvm-task.yaml \
-  -f https://raw.githubusercontent.com/openlab-red/pipelines-catalog/master/knative-client/kn-service-create-task.yaml
+  -f https://raw.githubusercontent.com/openlab-red/pipelines-catalog/master/maven/mvn.yaml
 ----
 
 Check the tasks created

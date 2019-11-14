@@ -1,3 +1,4 @@
+---
 apiVersion: tekton.dev/v1alpha1
 kind: Pipeline
 metadata:
@@ -9,19 +10,25 @@ spec:
     - name: app-image
       type: image
   params:
-    - name: deploymentConfig
-      description: The application name i.e. OpenShift/Kubernetes Deployment name
-    - name: applicationSrcDir
-      description: The source directory of the application within the source repository
+    - name: APP_NAME
+      default: quarkus
   tasks:
-    - name: build
+    - name: unit-test
+      params:
+        - name: GOALS
+          value:
+            - package
+      resources:
+        inputs:
+          - name: source
+            resource: app-git
+      taskRef:
+        name: mvn
+    - name: build-s2i
       taskRef:
         name: quarkus-native
-      params:
-        - name: tlsVerify
-          value: "false"
-        - name: contextDir
-          value: "${params.applicationSrcDir}"
+      runAfter:
+        - unit-test
       resources:
         inputs:
           - name: source
@@ -29,11 +36,28 @@ spec:
         outputs:
           - name: image
             resource: app-image
+    - name: int-test
+      taskRef:
+        name: mvn
+      runAfter:
+        - unit-test
+      resources:
+        inputs:
+          - name: source
+            resource: app-git
+      params:
+        - name: GOALS
+          value:
+            - verify
     - name: deploy
       taskRef:
         name: openshift-client
       runAfter:
-        - build
+        - build-s2i
+        - int-test
       params:
         - name: ARGS
-          value: "rollout latest ${params.deploymentConfig}"
+          value:
+            - rollout
+            - latest
+            - $(params.APP_NAME)

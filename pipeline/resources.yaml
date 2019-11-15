@@ -94,7 +94,7 @@ metadata:
     app: quarkus
 spec:
   ports:
-    - name: http
+    - name: httpo
       port: 8080
       targetPort: 8080
   selector:

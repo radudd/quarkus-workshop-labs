@@ -36,25 +36,25 @@ spec:
         outputs:
           - name: image
             resource: app-image
-    - name: int-test
-      taskRef:
-        name: mvn
-      runAfter:
-        - unit-test
-      resources:
-        inputs:
-          - name: source
-            resource: app-git
-      params:
-        - name: GOALS
-          value:
-            - verify
+#    - name: int-test
+#      taskRef:
+#        name: mvn
+#      runAfter:
+#        - unit-test
+#      resources:
+#        inputs:
+#          - name: source
+#            resource: app-git
+#      params:
+#        - name: GOALS
+#          value:
+#            - verify
     - name: deploy
       taskRef:
         name: openshift-client
       runAfter:
         - build-s2i
-        - int-test
+#        - int-test
       params:
         - name: ARGS
           value:

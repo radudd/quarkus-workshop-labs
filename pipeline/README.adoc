@@ -124,5 +124,5 @@ image::./images/dev.pipeline.green.png[ Green Pipeline ]
 
 [source,bash]
 ----
-ooc get pod -lapp=quarkus
+oc get pod -lapp=quarkus
 ----

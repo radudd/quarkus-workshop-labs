@@ -16,7 +16,7 @@ Create the following Tekton tasks which will be used in the `Pipelines`
 
 [source,bash]
 ----
-oc create -f https://raw.githubusercontent.com/tektoncd/catalog/master/openshift-client/openshift-client-task.yaml \
+oc apply -f https://raw.githubusercontent.com/tektoncd/catalog/master/openshift-client/openshift-client-task.yaml \
   -f https://raw.githubusercontent.com/openlab-red/pipelines-catalog/master/quarkus/s2i-quarkus-task.yaml \
   -f https://raw.githubusercontent.com/openlab-red/pipelines-catalog/master/quarkus/quarkus-native-task.yaml \
   -f https://raw.githubusercontent.com/openlab-red/pipelines-catalog/master/quarkus/quarkus-jvm-task.yaml \
@@ -91,13 +91,21 @@ quarkus-deploy   41s
 
 From Developer Console > Pipelines
 
-image::../images/dev.pipeline.png[ Dev Pipeline ]
+image::./images/dev.pipeline.png[ Dev Pipeline ]
 
 == Launch the pipeline
 
 [source,bash]
 ----
 tkn pipeline start quarkus-deploy -s pipeline
+----
+
+
+=== With nexus
+
+[source,bash]
+----
+tkn pipeline start quarkus-deploy -p "MAVEN_MIRROR_URL=http://nexus3.labs:8081/nexus/content/groups/public" -s pipeline
 ----
 
 ```
@@ -107,3 +115,14 @@ tkn pipeline start quarkus-deploy -s pipeline
 Pipelinerun started: quarkus-deploy-run-mww4f
 Showing logs...
 ```
+
+== Green
+
+image::./images/dev.pipeline.green.png[ Green Pipeline ]
+
+== Verify
+
+[source,bash]
+----
+ooc get pod -lapp=quarkus
+----

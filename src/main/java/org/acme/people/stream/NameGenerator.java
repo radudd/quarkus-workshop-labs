@@ -14,6 +14,5 @@ public class NameGenerator {
         return Flowable.interval(5, TimeUnit.SECONDS)
                 .map(tick -> CuteNameGenerator.generate());
     }
-
 }
 

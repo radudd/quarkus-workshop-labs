@@ -1,0 +1,63 @@
+---
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: quarkus-deploy
+spec:
+  resources:
+    - name: app-git
+      type: git
+    - name: app-image
+      type: image
+  params:
+    - name: APP_NAME
+      default: quarkus
+  tasks:
+    - name: unit-test
+      params:
+        - name: GOALS
+          value:
+            - package
+      resources:
+        inputs:
+          - name: source
+            resource: app-git
+      taskRef:
+        name: mvn
+    - name: build-s2i
+      taskRef:
+        name: s2i-quarkus
+      runAfter:
+        - unit-test
+      resources:
+        inputs:
+          - name: source
+            resource: app-git
+        outputs:
+          - name: image
+            resource: app-image
+#    - name: int-test
+#      taskRef:
+#        name: mvn
+#      runAfter:
+#        - unit-test
+#      resources:
+#        inputs:
+#          - name: source
+#            resource: app-git
+#      params:
+#        - name: GOALS
+#          value:
+#            - verify
+    - name: deploy
+      taskRef:
+        name: openshift-client
+      runAfter:
+        - build-s2i
+#        - int-test
+      params:
+        - name: ARGS
+          value:
+            - rollout
+            - latest
+            - $(params.APP_NAME)
